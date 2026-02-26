@@ -1,26 +1,27 @@
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from alpaca.data.historical import StockHistoricalDataClient
 from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
-from pathlib import Path
-import os, pandas as pd, logging
+import os 
+import pandas as pd
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
+from configs.logger_config import setup_logging, get_logger
+
 
 current_dir = Path(__file__).resolve().parent
-log_dir = current_dir.parent / 'logs'
-log_dir.mkdir(exist_ok=True)
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler(log_dir / 'historical_data_client.log'),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger(__name__)
+
+setup_logging()
+logger = get_logger(__name__)
 
 dotenv_path = current_dir.parent / '.env'
 load_dotenv(dotenv_path)
+
+
 
 logger.info("Alpaca Client Initialization")
 API_KEY = os.getenv('API_KEY')
